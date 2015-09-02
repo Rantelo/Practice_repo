@@ -1,4 +1,4 @@
-def cipher str, num
+def caesar_cipher str, num
 	ary = str.split("")
 	ary.map!{|c|
 		if c.ord.between?(97,122)
@@ -17,6 +17,7 @@ def cipher str, num
 	}
 	ary.join
 end
+# TODO: add Uppercase Support 
 
-puts cipher "hey, si me ven", 3
+puts cipher "What a string!", 5
 puts cipher "khb, vl ph yhq", -3
