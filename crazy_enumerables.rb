@@ -9,17 +9,48 @@ module Enumerable
 
 # TODO: my_each_with_index
   def my_each_with_index
+    return enum_for(:my_each_with_index) unless block_given?
+    for i in (0...self.size)
+      yield(self[i], i)
+    end
   end
 
 # TODO: my_select
   def my_select
+    return enum_for(:my_select) unless block_given?
+    result = []
+    self.my_each do |e|
+      result.push(e) if yield(e)
+    end
+    result
   end
+
 # TODO: my_all?
   def my_all?
+    if block_given?
+      for e in self
+        return false unless yield(e)
+      end
+    else
+      for e in self
+        return false if e.nil? || e == false
+      end
+    end
+    true
   end
 
 # TODO: my_any?
   def my_any?
+    if block_given?
+      for e in self
+        return true if yield(e)
+      end
+    else
+      for e in self
+        return true if !e.nil? && e != false
+      end
+    end
+    false
   end
 
 # TODO: my_none
