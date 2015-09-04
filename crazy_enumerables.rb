@@ -1,6 +1,10 @@
 module Enumerable
 # TODO: my_each
   def my_each
+    return enum_for(:my_each) unless block_given?
+    for i in (0...self.size)
+      yield(self[i])
+    end
 	end
 
 # TODO: my_each_with_index
