@@ -1,5 +1,4 @@
 module Enumerable
-# TODO: my_each
   def my_each
     return enum_for(:my_each) unless block_given?
     for i in (0...self.size)
@@ -7,7 +6,6 @@ module Enumerable
     end
 	end
 
-# TODO: my_each_with_index
   def my_each_with_index
     return enum_for(:my_each_with_index) unless block_given?
     for i in (0...self.size)
@@ -15,7 +13,6 @@ module Enumerable
     end
   end
 
-# TODO: my_select
   def my_select
     return enum_for(:my_select) unless block_given?
     result = []
@@ -25,7 +22,6 @@ module Enumerable
     result
   end
 
-# TODO: my_all?
   def my_all?
     if block_given?
       for e in self
@@ -39,7 +35,6 @@ module Enumerable
     true
   end
 
-# TODO: my_any?
   def my_any?
     if block_given?
       for e in self
@@ -53,12 +48,24 @@ module Enumerable
     false
   end
 
-# TODO: my_none
-  def my_none  
+  def my_none?
+    if block_given?
+      for i in self
+        return false if yield(i)
+      end
+    else
+      for i in self
+        return false if !i.nil? && i != false
+      end
+    end
+    true
   end
 
-# TODO: my_count
-  def my_count
+  def my_count(*arg)
+    raise ArgumentError, "wrong number of arguments (#{arg.size} for 1)" if arg.size > 1
+    return self.size if arg.size == 0
+    return self.my_select{|e| yield(e)}.size if block_given?
+    return self.my_select{|e| e == arg[0]}.size
   end
 
 # TODO: my_map
