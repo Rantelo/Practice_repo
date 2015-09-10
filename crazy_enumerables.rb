@@ -68,18 +68,48 @@ module Enumerable
     return self.my_select{|e| e == arg[0]}.size
   end
 
-# TODO: my_map
-  def my_map
+  def my_map(proc = nil)
+    result = []
+    for e in self
+      if proc && block_given?
+        result.push(yield(proc.call(e)))
+      elsif proc
+        result.push(proc.call(e))
+      elsif block_given?
+        result.push(yield(e))
+      else
+        result.push(e)
+      end
+    end
+    result
   end
 
-# TODO: my_inject
-  def my_inject
+  def my_inject(*arg)
+    raise ArgumentError, "wrong number of arguments (#{arg.size} for 1 or 2)" if arg.size > 2
+    if arg.size == 0
+      raise LocalJumpError, "no block given" unless block_given?
+      for e in self
+        memo = yield(memo, e)
+      end
+    elsif arg.size == 1
+      if arg[0].is_a?(Symbol)
+        memo = (arg[0].to_s == "+" || arg[0].to_s == "-") ? 0 : 1
+        self.my_each{|e| memo = e.send(arg[0],memo)}
+      else
+        raise LocalJumpError, "no block given" unless block_given?
+        memo = arg[0]
+        for e in self
+          memo = yield(memo, e)
+        end 
+      end
+    elsif arg.size == 2
+      memo = arg[0]
+      self.my_each{|e| memo = memo.send(arg[1], e)}
+    end
+    memo 
   end
+end
 
-# NOTE: Test #my_inject by creating a method called #multiply_els which multiplies all the elements of the array together by using #my_inject, e.g. multiply_els([2,4,5]) #=> 40
-
-# TODO: Modify your #my_map method to take a proc
-
-# TODO: Modify your #my_map method to take either a proc or a block, executing the block only if both are supplied (in which case it would execute both the block AND the proc).
-
+def multiply_els(arr)
+  arr.my_inject(:*)
 end
